@@ -1,4 +1,5 @@
 using UnityEngine;
+using PrimeTween;
 
 public class Tower : MonoBehaviour
 {
@@ -15,6 +16,9 @@ public class Tower : MonoBehaviour
 
     [Header("Damage Configuration")]
     [SerializeField] private int baseDamage = 10;
+
+    [Header("Feedback")]
+    [SerializeField, Range(0f, 1f)] private float cameraShakeStrength = 0.4f;
 
     private float lastFireTime;
     private Quaternion targetRotation;
@@ -125,6 +129,11 @@ public class Tower : MonoBehaviour
         currentHealth = Mathf.Max(0, currentHealth);
 
         OnHealthChanged?.Invoke(currentHealth, maxHealth);
+
+        if (Camera.main != null)
+        {
+            Tween.ShakeCamera(Camera.main, cameraShakeStrength);
+        }
 
         if (currentHealth <= 0)
         {

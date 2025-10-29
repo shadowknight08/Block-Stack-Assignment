@@ -35,7 +35,6 @@ public class Enemy : MonoBehaviour, IPoolable
         if (isDead || targetTower == null) return;
 
         MoveTowardsTower();
-        CheckReachedTower();
     }
 
     private void MoveTowardsTower()
@@ -50,23 +49,25 @@ public class Enemy : MonoBehaviour, IPoolable
         }
     }
 
-    private void CheckReachedTower()
+    private void OnTriggerEnter2D(Collider2D other)
     {
-        float distanceToTower = Vector3.Distance(transform.position, targetTower.transform.position);
-
-        if (distanceToTower < 0.5f)
+        if (isDead) return;
+        var tower = other.GetComponent<Tower>();
+        if (tower != null)
         {
             DealDamageToTower();
             Die();
         }
     }
 
+
+
     private void DealDamageToTower()
     {
         if (targetTower != null && enemyData != null)
         {
-            // Use damageDealt directly (already set in ScriptableObject)
-            targetTower.TakeDamage(enemyData.damageDealt);
+            // Use attack stat as the damage dealt to the tower
+            targetTower.TakeDamage(enemyData.attack);
         }
     }
 
